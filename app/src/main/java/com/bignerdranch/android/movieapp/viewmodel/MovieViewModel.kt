@@ -18,17 +18,14 @@ class MovieViewModel : ViewModel() {
     fun loadMovies() {
         viewModelScope.launch {
             try {
-                println(">>> Загрузка фильмов...")
-                val response = RetrofitClient.kinopoiskApi.getPopularMovies()
-                println(">>> Получено фильмов: ${response.docs.size}")
-
-                if (response.docs.isEmpty()) {
-                    println(">>> Внимание: список фильмов пуст!")
-                }
-
+                println(">>> Запрос: rating.kp=1-10 | API_KEY=${RetrofitClient.API_KEY}")
+                val response = RetrofitClient.kinopoiskApi.getMoviesByRating(
+                    apiKey = RetrofitClient.API_KEY // Явная передача ключа
+                )
+                println(">>> Ответ: ${response.docs}")
                 _movies.value = response.docs
             } catch (e: Exception) {
-                println(">>> Ошибка при загрузке: ${e.message}")
+                println(">>> Ошибка: ${e.message}")
                 e.printStackTrace()
             }
         }

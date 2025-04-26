@@ -9,8 +9,13 @@ data class Movie(
     val name: String?,
     val poster: Poster?,
     val rating: Rating?,
-    val description: String?
+    val description: String?,
+    // Дополнительные поля из ответа API
+    val year: Int?,
+    val genres: List<Genre>?
 )
+
+data class Genre(val name: String?)
 
 data class Poster(
     val url: String?
