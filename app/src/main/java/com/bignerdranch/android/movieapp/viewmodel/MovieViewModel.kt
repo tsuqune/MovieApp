@@ -19,7 +19,7 @@ class MovieViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 println(">>> Запрос: rating.kp=1-10 | API_KEY=${RetrofitClient.API_KEY}")
-                val response = RetrofitClient.kinopoiskApi.getMoviesByRating(
+                val response = RetrofitClient.kinopoiskApi.getTopRatedMovies(
                     apiKey = RetrofitClient.API_KEY // Явная передача ключа
                 )
                 println(">>> Ответ: ${response.docs}")

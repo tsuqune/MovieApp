@@ -10,8 +10,13 @@ object RetrofitClient {
 
     // Упрощенный клиент без интерцепторов
     private val okHttpClient = OkHttpClient.Builder()
+        .addInterceptor { chain ->
+            val request = chain.request()
+            println(">>> URL запроса: ${request.url}") // Логируем полный URL
+            chain.proceed(request)
+        }
         .addInterceptor(HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.HEADERS
+            level = HttpLoggingInterceptor.Level.HEADERS // Логируем заголовки
         })
         .build()
 
