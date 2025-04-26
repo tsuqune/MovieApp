@@ -1,6 +1,8 @@
 package com.bignerdranch.android.movieapp.ui.components
 
+import android.content.Intent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
@@ -9,17 +11,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
+import com.bignerdranch.android.movieapp.AnimeDetailActivity
 import com.bignerdranch.android.movieapp.model.Movie
 
 @Composable
 fun MovieItem(movie: Movie) {
+
+    val context = LocalContext.current
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
+            .clickable {
+                val intent = Intent(context, AnimeDetailActivity::class.java)
+                intent.putExtra("movie", movie)
+                context.startActivity(intent)
+            }
     ) {
         Row(
             modifier = Modifier.padding(8.dp),
