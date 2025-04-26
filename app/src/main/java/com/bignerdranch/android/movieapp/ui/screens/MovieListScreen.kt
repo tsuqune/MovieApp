@@ -3,9 +3,10 @@ package com.bignerdranch.android.movieapp.ui.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,10 +17,20 @@ import com.bignerdranch.android.movieapp.viewmodel.MovieViewModel
 
 @Composable
 fun MovieListScreen(viewModel: MovieViewModel = viewModel()) {
-    val movies = viewModel.movies.collectAsState().value
-    val filterState = viewModel.filterState.collectAsState().value
+    val movies by viewModel.movies.collectAsState()
+    val filterState by viewModel.filterState.collectAsState()
+    val searchQuery by viewModel.searchQuery.collectAsState()
 
     Column(modifier = Modifier.fillMaxSize()) {
+        // Поисковая строка
+        SearchBar(
+            query = searchQuery,
+            onQueryChange = { viewModel.searchAnime(it) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        )
+
         // Панель фильтров
         Row(
             modifier = Modifier
@@ -29,23 +40,62 @@ fun MovieListScreen(viewModel: MovieViewModel = viewModel()) {
         ) {
             FilterButton(
                 text = "Топ рейтинга",
-                isActive = filterState == "top",
-                onClick = { viewModel.loadTopMovies() }
+                isActive = filterState == "top" && searchQuery.isEmpty(),
+                onClick = {
+                    viewModel.loadTopMovies()
+                    viewModel.searchAnime("")
+                }
             )
             FilterButton(
                 text = "Новинки",
-                isActive = filterState == "recent",
-                onClick = { viewModel.loadRecentAnime() }
+                isActive = filterState == "recent" && searchQuery.isEmpty(),
+                onClick = {
+                    viewModel.loadRecentAnime()
+                    viewModel.searchAnime("")
+                }
             )
         }
 
-        // Список
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(movies) { movie ->
-                MovieItem(movie = movie)
+        // Список или сообщение о пустом результате
+        when {
+            movies.isEmpty() && searchQuery.isNotEmpty() -> {
+                Text(
+                    text = "Ничего не найдено",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+            }
+            else -> {
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    items(movies) { movie ->
+                        MovieItem(movie = movie)
+                    }
+                }
             }
         }
     }
+}
+
+@Composable
+fun SearchBar(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    TextField(
+        value = query,
+        onValueChange = onQueryChange,
+        modifier = modifier,
+        placeholder = { Text("Поиск аниме...") },
+        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent
+        ),
+        singleLine = true
+    )
 }
 
 @Composable
@@ -63,3 +113,4 @@ fun FilterButton(
         Text(text)
     }
 }
+

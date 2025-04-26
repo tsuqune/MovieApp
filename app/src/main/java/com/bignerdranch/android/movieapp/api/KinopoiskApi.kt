@@ -27,4 +27,15 @@ interface KinopoiskApi {
         @Query("page") page: Int = 1,
         @Query("limit") limit: Int = 100
     ): MovieResponse
+
+    @GET("v1.4/movie/search")
+    suspend fun searchAnime(
+        @Header("X-API-KEY") apiKey: String,
+        @Query("query") searchQuery: String,
+        @Query("type") type: String = "anime", // Основной фильтр
+        @Query("genres.name") genre: String = "аниме", // Доп. фильтр
+        @Query("sortField") sortField: String = "rating.kp",
+        @Query("sortType") sortType: String = "-1",
+        @Query("limit") limit: Int = 100
+    ): MovieResponse
 }

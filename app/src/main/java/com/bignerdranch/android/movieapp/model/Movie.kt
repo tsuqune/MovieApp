@@ -12,6 +12,7 @@ data class Movie(
     val id: Int,
     val name: String?,
     val poster: Poster?,
+    val type: String?,
     val rating: Rating?,
     val description: String?,
     val year: Int?,
