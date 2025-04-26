@@ -1,26 +1,28 @@
 package com.bignerdranch.android.movieapp.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
 data class MovieResponse(
     val docs: List<Movie>
 )
 
+@Parcelize
 data class Movie(
     val id: Int,
     val name: String?,
     val poster: Poster?,
     val rating: Rating?,
     val description: String?,
-    // Дополнительные поля из ответа API
     val year: Int?,
     val genres: List<Genre>?
-)
+) : Parcelable
 
-data class Genre(val name: String?)
+@Parcelize
+data class Genre(val name: String?) : Parcelable
 
-data class Poster(
-    val url: String?
-)
+@Parcelize
+data class Poster(val url: String?) : Parcelable
 
-data class Rating(
-    val kp: Double?
-)
+@Parcelize
+data class Rating(val kp: Double?) : Parcelable
