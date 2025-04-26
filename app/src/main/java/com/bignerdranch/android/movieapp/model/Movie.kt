@@ -7,16 +7,15 @@ data class MovieResponse(
 data class Movie(
     val id: Int,
     val name: String?,
-    val alternativeName: String?,
-    val description: String?,
+    val poster: Poster?,
     val rating: Rating?,
-    val poster: Poster?
-)
-
-data class Rating(
-    val kp: Double?
+    val description: String?
 )
 
 data class Poster(
     val url: String?
+)
+
+data class Rating(
+    val kp: Double?
 )

@@ -3,14 +3,13 @@ package com.bignerdranch.android.movieapp.ui.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Card
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import com.bignerdranch.android.movieapp.model.Movie
@@ -22,7 +21,10 @@ fun MovieItem(movie: Movie) {
             .fillMaxWidth()
             .padding(8.dp)
     ) {
-        Row(modifier = Modifier.padding(8.dp)) {
+        Row(
+            modifier = Modifier.padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             // Постер
             movie.poster?.url?.let { url ->
                 Image(
@@ -34,15 +36,15 @@ fun MovieItem(movie: Movie) {
                     modifier = Modifier.size(120.dp),
                     contentScale = ContentScale.Crop
                 )
-            }
+                println(">>> Загружен постер: $url") // Лог
+            } ?: println(">>> Постер отсутствует")
 
             Spacer(modifier = Modifier.width(8.dp))
 
             // Информация
             Column {
                 Text(
-                    text = movie.name ?: movie.alternativeName ?: "Без названия",
-                    style = MaterialTheme.typography.titleMedium,
+                    text = movie.name ?: "Без названия",
                     fontWeight = FontWeight.Bold
                 )
                 Text(
@@ -51,8 +53,7 @@ fun MovieItem(movie: Movie) {
                 )
                 Text(
                     text = movie.description ?: "Описание отсутствует",
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis
+                    maxLines = 3
                 )
             }
         }
