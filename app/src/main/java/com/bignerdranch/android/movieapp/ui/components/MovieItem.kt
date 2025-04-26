@@ -4,18 +4,23 @@ import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
 import com.bignerdranch.android.movieapp.AnimeDetailActivity
+import com.bignerdranch.android.movieapp.formatRating
 import com.bignerdranch.android.movieapp.model.Movie
 
 @Composable
@@ -26,47 +31,68 @@ fun MovieItem(movie: Movie) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable {
-                val intent = Intent(context, AnimeDetailActivity::class.java)
+            .clickable { val intent = Intent(context, AnimeDetailActivity::class.java)
                 intent.putExtra("movie", movie)
-                context.startActivity(intent)
-            }
+                context.startActivity(intent) }
     ) {
-        Row(
-            modifier = Modifier.padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier.padding(8.dp)
         ) {
-            // Постер
-            movie.poster?.url?.let { url ->
+            // Первая строка: изображение + название и рейтинг
+            Row(
+                verticalAlignment = Alignment.Top
+            ) {
+                // Постер
                 Image(
-                    painter = rememberImagePainter(
-                        data = url,
-                        builder = { crossfade(true) }
-                    ),
-                    contentDescription = movie.name,
-                    modifier = Modifier.size(120.dp),
+                    painter = rememberImagePainter(data = movie.poster?.url),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .size(100.dp),
                     contentScale = ContentScale.Crop
                 )
-                println(">>> Загружен постер: $url") // Лог
-            } ?: println(">>> Постер отсутствует")
 
-            Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(8.dp))
 
-            // Информация
-            Column {
+                // Название и рейтинг в колонке
                 Text(
                     text = movie.name ?: "Без названия",
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    modifier = Modifier.weight(1f)
                 )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
                 Text(
-                    text = "★ ${movie.rating?.kp ?: "Н/Д"}",
-                    color = Color(0xFFFFA500)
+                    text = "★ ${movie.rating?.kp?.formatRating() ?: "Н/Д"}",
+                    color = Color(0xFFFFA500),
+                    fontSize = 20.sp
                 )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Вторая строка: описание (с отступом под изображением)
+            Row() {
                 Text(
                     text = movie.description ?: "Описание отсутствует",
-                    maxLines = 3
+                    fontSize = 13.sp,
+                    lineHeight = 16.sp,
+                    maxLines = 5
                 )
             }
         }
     }
 }
+
+fun Double.formatRating(): String {
+    return if (this % 1 == 0.0) {
+        this.toInt().toString()
+    } else {
+        "%.1f".format(this)
+            .replace(".0", "")
+            .replace(",0", "")
+    }
+}
+

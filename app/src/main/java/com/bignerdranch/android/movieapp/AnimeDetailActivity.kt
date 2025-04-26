@@ -5,17 +5,21 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.bignerdranch.android.movieapp.model.Movie
 
 class AnimeDetailActivity : ComponentActivity() {
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val movie = intent.getParcelableExtra<Movie>("movie")
@@ -44,7 +48,8 @@ fun AnimeDetailScreen(movie: Movie) {
             model = movie.poster?.url,
             contentDescription = "Постер",
             modifier = Modifier
-                .size(300.dp)
+                .size(450.dp)
+                .clip(RoundedCornerShape(170.dp))
                 .align(Alignment.CenterHorizontally)
         )
 
@@ -60,7 +65,7 @@ fun AnimeDetailScreen(movie: Movie) {
 
         // Рейтинг
         Text(
-            text = "★ ${movie.rating?.kp ?: "Н/Д"}",
+            text = "★ ${movie.rating?.kp?.formatRating() ?: "Н/Д"}",
             color = Color(0xFFFFA500),
             style = MaterialTheme.typography.titleLarge
         )
@@ -87,3 +92,15 @@ fun AnimeDetailScreen(movie: Movie) {
         )
     }
 }
+
+fun Double.formatRating(): String {
+    return if (this % 1 == 0.0) {
+        this.toInt().toString()
+    } else {
+        "%.1f".format(this)
+            .replace(".0", "")
+            .replace(",0", "")
+    }
+}
+
+
