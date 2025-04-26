@@ -11,22 +11,40 @@ class MovieViewModel : ViewModel() {
     private val _movies = MutableStateFlow<List<Movie>>(emptyList())
     val movies: StateFlow<List<Movie>> = _movies
 
+    // Состояние фильтра
+    private val _filterState = MutableStateFlow("top") // "top" или "recent"
+    val filterState: StateFlow<String> = _filterState
+
     init {
-        loadMovies()
+        loadTopMovies()
     }
 
-    fun loadMovies() {
+    fun loadTopMovies() {
+        _filterState.value = "top"
         viewModelScope.launch {
             try {
-                println(">>> Запрос: rating.kp=1-10 | API_KEY=${RetrofitClient.API_KEY}")
                 val response = RetrofitClient.kinopoiskApi.getTopRatedMovies(
-                    apiKey = RetrofitClient.API_KEY // Явная передача ключа
+                    apiKey = RetrofitClient.API_KEY
                 )
-                println(">>> Ответ: ${response.docs}")
                 _movies.value = response.docs
             } catch (e: Exception) {
                 println(">>> Ошибка: ${e.message}")
-                e.printStackTrace()
+            }
+        }
+    }
+
+    fun loadRecentAnime() {
+        _filterState.value = "recent"
+        viewModelScope.launch {
+            try {
+                val currentYear = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR)
+                val response = RetrofitClient.kinopoiskApi.getRecentAnime(
+                    apiKey = RetrofitClient.API_KEY,
+                    year = "${currentYear}"
+                )
+                _movies.value = response.docs
+            } catch (e: Exception) {
+                println(">>> Ошибка: ${e.message}")
             }
         }
     }

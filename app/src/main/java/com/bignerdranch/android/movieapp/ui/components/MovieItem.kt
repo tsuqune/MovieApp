@@ -15,7 +15,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
@@ -59,6 +58,7 @@ fun MovieItem(movie: Movie) {
                     text = movie.name ?: "Без названия",
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
+                    maxLines = 4,
                     modifier = Modifier.weight(1f)
                 )
 
@@ -79,7 +79,7 @@ fun MovieItem(movie: Movie) {
                     text = movie.description ?: "Описание отсутствует",
                     fontSize = 13.sp,
                     lineHeight = 16.sp,
-                    maxLines = 5
+                    maxLines = 5,
                 )
             }
         }
