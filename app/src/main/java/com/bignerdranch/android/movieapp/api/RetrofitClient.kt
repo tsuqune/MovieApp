@@ -17,11 +17,12 @@ object RetrofitClient {
         .addInterceptor(loggingInterceptor)
         .build()
 
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .client(okHttpClient)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    val tmdbApi: TmdbApi = retrofit.create(TmdbApi::class.java)
+    val tmdbApi: TmdbApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(TmdbApi::class.java)
+    }
 }
