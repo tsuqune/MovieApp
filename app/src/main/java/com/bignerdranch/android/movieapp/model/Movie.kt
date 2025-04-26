@@ -1,14 +1,22 @@
 package com.bignerdranch.android.movieapp.model
 
 data class MovieResponse(
-    val results: List<Movie>
+    val docs: List<Movie>
 )
 
 data class Movie(
     val id: Int,
-    val title: String,
-    val overview: String,
-    val poster_path: String?,
-    val vote_average: Double,
-    val release_date: String
+    val name: String?,
+    val alternativeName: String?,
+    val description: String?,
+    val rating: Rating?,
+    val poster: Poster?
+)
+
+data class Rating(
+    val kp: Double?
+)
+
+data class Poster(
+    val url: String?
 )

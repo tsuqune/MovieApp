@@ -12,15 +12,13 @@ class MovieViewModel : ViewModel() {
     private val _movies = MutableStateFlow<List<Movie>>(emptyList())
     val movies: StateFlow<List<Movie>> = _movies
 
-    init {
-        loadMovies()
-    }
-
-    private fun loadMovies() {
+    fun loadMovies() {
         viewModelScope.launch {
             try {
-                val response = RetrofitClient.tmdbApi.getPopularMovies(apiKey = RetrofitClient.API_KEY)
-                _movies.value = response.results
+                val response = RetrofitClient.kinopoiskApi.getPopularMovies(
+                    apiKey = RetrofitClient.API_KEY
+                )
+                _movies.value = response.docs
             } catch (e: Exception) {
                 e.printStackTrace()
             }

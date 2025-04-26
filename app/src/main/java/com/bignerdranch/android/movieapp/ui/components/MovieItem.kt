@@ -8,6 +8,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
@@ -21,19 +23,37 @@ fun MovieItem(movie: Movie) {
             .padding(8.dp)
     ) {
         Row(modifier = Modifier.padding(8.dp)) {
-            Image(
-                painter = rememberImagePainter(
-                    data = "https://image.tmdb.org/t/p/w500${movie.poster_path}",
-                    builder = { crossfade(true) }
-                ),
-                contentDescription = movie.title,
-                modifier = Modifier.size(120.dp)
-            )
+            // Постер
+            movie.poster?.url?.let { url ->
+                Image(
+                    painter = rememberImagePainter(
+                        data = url,
+                        builder = { crossfade(true) }
+                    ),
+                    contentDescription = movie.name,
+                    modifier = Modifier.size(120.dp),
+                    contentScale = ContentScale.Crop
+                )
+            }
+
             Spacer(modifier = Modifier.width(8.dp))
+
+            // Информация
             Column {
-                Text(text = movie.title, style = MaterialTheme.typography.titleMedium)
-                Text(text = "★ ${movie.vote_average}", color = Color(0xFFFFA500))
-                Text(text = movie.overview, maxLines = 3, overflow = TextOverflow.Ellipsis)
+                Text(
+                    text = movie.name ?: movie.alternativeName ?: "Без названия",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "★ ${movie.rating?.kp ?: "Н/Д"}",
+                    color = Color(0xFFFFA500)
+                )
+                Text(
+                    text = movie.description ?: "Описание отсутствует",
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
     }
