@@ -2,7 +2,10 @@ package com.bignerdranch.android.movieapp.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bignerdranch.android.movieapp.data.AppDatabase
 import com.bignerdranch.android.movieapp.model.Movie
+import com.bignerdranch.android.movieapp.model.WatchedAnime
+import com.google.gson.Gson
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,7 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
-class MovieViewModel : ViewModel() {
+class MovieViewModel(private val db: AppDatabase) : ViewModel() {
     private val _movies = MutableStateFlow<List<Movie>>(emptyList())
     val movies: StateFlow<List<Movie>> = _movies
 
@@ -102,6 +105,38 @@ class MovieViewModel : ViewModel() {
                 performSearch(query)
             } else {
 
+            }
+        }
+    }
+
+    private val _watchedAnime = MutableStateFlow<List<WatchedAnime>>(emptyList())
+    val watchedAnime: StateFlow<List<WatchedAnime>> = _watchedAnime
+
+    init {
+        viewModelScope.launch {
+            db.watchedAnimeDao().getAll().collect { list ->
+                _watchedAnime.value = list
+            }
+        }
+    }
+
+    fun toggleWatchedStatus(movie: Movie) {
+        viewModelScope.launch {
+            val existing = db.watchedAnimeDao().getById(movie.id)
+            if (existing != null) {
+                db.watchedAnimeDao().delete(existing)
+            } else {
+                val genresJson = Gson().toJson(movie.genres) // Сериализация жанров
+                val watchedAnime = WatchedAnime(
+                    id = movie.id,
+                    name = movie.name,
+                    posterUrl = movie.poster?.url,
+                    rating = movie.rating?.imdb,
+                    year = movie.year,
+                    genresJson = genresJson,
+                    description = movie.description
+                )
+                db.watchedAnimeDao().insert(watchedAnime)
             }
         }
     }

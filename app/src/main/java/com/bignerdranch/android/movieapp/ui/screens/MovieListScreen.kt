@@ -11,13 +11,23 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.bignerdranch.android.movieapp.MovieApp
 import com.bignerdranch.android.movieapp.ui.components.MovieItem
 import com.bignerdranch.android.movieapp.viewmodel.MovieViewModel
+import com.bignerdranch.android.movieapp.viewmodel.MovieViewModelFactory
+
 
 @Composable
-fun MovieListScreen(viewModel: MovieViewModel = viewModel()) {
+fun MovieListScreen(
+    viewModel: MovieViewModel = viewModel(
+        factory = MovieViewModelFactory(
+            (LocalContext.current.applicationContext as MovieApp).database
+        )
+    )
+) {
     val movies by viewModel.movies.collectAsState()
     val filterState by viewModel.filterState.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()

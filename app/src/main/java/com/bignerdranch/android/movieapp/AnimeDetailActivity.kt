@@ -3,12 +3,14 @@ package com.bignerdranch.android.movieapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -16,18 +18,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.bignerdranch.android.movieapp.model.Movie
+import com.bignerdranch.android.movieapp.viewmodel.MovieViewModel
+import com.bignerdranch.android.movieapp.viewmodel.MovieViewModelFactory
+import androidx.compose.runtime.getValue
+
 
 class AnimeDetailActivity : ComponentActivity() {
-
+    private val viewModel: MovieViewModel by viewModels {
+        MovieViewModelFactory((application as MovieApp).database)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val movie = intent.getParcelableExtra<Movie>("movie")
         setContent {
             MaterialTheme {
-                Surface(modifier = Modifier.fillMaxSize()) {
+                Surface {
                     if (movie != null) {
-                        AnimeDetailScreen(movie = movie)
+                        AnimeDetailScreen(movie = movie, viewModel = viewModel)
                     }
                 }
             }
@@ -36,7 +44,9 @@ class AnimeDetailActivity : ComponentActivity() {
 }
 
 @Composable
-fun AnimeDetailScreen(movie: Movie) {
+fun AnimeDetailScreen(movie: Movie, viewModel: MovieViewModel) { // Добавлен параметр viewModel
+    val watchedList by viewModel.watchedAnime.collectAsState()
+    val isWatched = watchedList.any { it.id == movie.id }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -90,6 +100,15 @@ fun AnimeDetailScreen(movie: Movie) {
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(top = 16.dp)
         )
+
+        Button(
+            onClick = { viewModel.toggleWatchedStatus(movie) },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = if (isWatched) Color.Green else Color.Red
+            )
+        ) {
+            Text(if (isWatched) "Просмотрено ✓" else "Не просмотрено")
+        }
     }
 }
 
