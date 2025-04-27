@@ -65,7 +65,7 @@ fun MovieItem(movie: Movie) {
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Text(
-                    text = "★ ${movie.rating?.kp?.formatRating() ?: "Н/Д"}",
+                    text = "★ ${movie.rating?.imdb?.formatRating() ?: "Н/Д"}",
                     color = Color(0xFFFFA500),
                     fontSize = 20.sp
                 )

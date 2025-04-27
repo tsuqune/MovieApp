@@ -9,9 +9,9 @@ interface KinopoiskApi {
     @GET("v1.4/movie")
     suspend fun getTopRatedMovies(
         @Header("X-API-KEY") apiKey: String,
-        @Query("rating.kp") ratingRange: String = "8-10", // Фильтр по рейтингу
+        @Query("rating.kp") ratingRange: String = "8-10",
         @Query("genres.name") genre: String = "аниме",
-        @Query("sortField") sortField: String = "rating.kp", // Поле для сортировки
+        @Query("sortField") sortField: String = "rating.imdb", // Поле для сортировки
         @Query("sortType") sortType: String = "-1", // -1 = по убыванию
         @Query("page") page: Int = 1,
         @Query("limit") limit: Int = 100 // Лимит 100 аниме
@@ -20,9 +20,9 @@ interface KinopoiskApi {
     @GET("v1.4/movie")
     suspend fun getRecentAnime(
         @Header("X-API-KEY") apiKey: String,
-        @Query("year") year: String, // Фильтр по году
+        @Query("year") year: String,
         @Query("genres.name") genre: String = "аниме",
-        @Query("sortField") sortField: String = "rating.kp",
+        @Query("sortField") sortField: String = "rating.imdb",
         @Query("sortType") sortType: String = "-1",
         @Query("page") page: Int = 1,
         @Query("limit") limit: Int = 100
@@ -32,9 +32,8 @@ interface KinopoiskApi {
     suspend fun searchAnime(
         @Header("X-API-KEY") apiKey: String,
         @Query("query") searchQuery: String,
-        @Query("type") type: String = "anime", // Основной фильтр
         @Query("genres.name") genre: String = "аниме", // Доп. фильтр
-        @Query("sortField") sortField: String = "rating.kp",
+        @Query("sortField") sortField: String = "rating.imdb",
         @Query("sortType") sortType: String = "-1",
         @Query("limit") limit: Int = 100
     ): MovieResponse

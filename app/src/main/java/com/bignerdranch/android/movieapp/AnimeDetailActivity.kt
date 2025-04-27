@@ -65,7 +65,7 @@ fun AnimeDetailScreen(movie: Movie) {
 
         // Рейтинг
         Text(
-            text = "★ ${movie.rating?.kp?.formatRating() ?: "Н/Д"}",
+            text = "★ ${movie.rating?.imdb?.formatRating() ?: "Н/Д"}",
             color = Color(0xFFFFA500),
             style = MaterialTheme.typography.titleLarge
         )

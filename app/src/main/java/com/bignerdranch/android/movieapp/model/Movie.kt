@@ -26,4 +26,4 @@ data class Genre(val name: String?) : Parcelable
 data class Poster(val url: String?) : Parcelable
 
 @Parcelize
-data class Rating(val kp: Double?) : Parcelable
+data class Rating(val imdb: Double?) : Parcelable

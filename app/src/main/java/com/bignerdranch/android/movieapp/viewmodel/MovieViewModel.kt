@@ -73,7 +73,7 @@ class MovieViewModel : ViewModel() {
                     movie.type == "anime" ||
                             movie.genres?.any { it.name.equals("аниме", true) } == true
                 }
-                .sortedByDescending { it.rating?.kp ?: 0.0 }
+                .sortedByDescending { it.rating?.imdb ?: 0.0 }
 
         } catch (e: Exception) {
             println("Search error: ${e.message}")
