@@ -53,6 +53,8 @@ android {
 
 dependencies {
 
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+
     implementation("com.google.code.gson:gson:2.10.1")
 
     implementation("androidx.navigation:navigation-compose:2.7.7")
@@ -60,6 +62,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.6.3")
 
     implementation(libs.androidx.espresso.core)
+    implementation(libs.androidx.runtime.livedata)
     // Room
     val room_version = "2.6.0"
     implementation("androidx.room:room-runtime:$room_version")
