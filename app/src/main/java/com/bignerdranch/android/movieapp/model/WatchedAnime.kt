@@ -19,5 +19,16 @@ data class WatchedAnime(
     fun getGenres(): List<Genre> {
         return if (genresJson.isNullOrEmpty()) emptyList()
         else Gson().fromJson(genresJson, object : TypeToken<List<Genre>>() {}.type)
+
     }
+    fun toMovie(): Movie = Movie(
+        id = this.id,
+        name = this.name,
+        poster = Poster(this.posterUrl),
+        rating = Rating(this.rating),
+        year = this.year,
+        genres = Gson().fromJson(this.genresJson, Array<Genre>::class.java).toList(),
+        description = this.description,
+        type = "anime"
+    )
 }
