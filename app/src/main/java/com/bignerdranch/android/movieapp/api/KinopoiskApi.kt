@@ -1,8 +1,10 @@
 package com.bignerdranch.android.movieapp.api
 
+import com.bignerdranch.android.movieapp.model.Movie
 import com.bignerdranch.android.movieapp.model.MovieResponse
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface KinopoiskApi {
@@ -37,4 +39,10 @@ interface KinopoiskApi {
         @Query("sortType") sortType: String = "-1",
         @Query("limit") limit: Int = 100
     ): MovieResponse
+
+    @GET("v1.4/movie/{id}")
+    suspend fun getMovieDetails(
+        @Path("id") movieId: Int,
+        @Header("X-API-KEY") apiKey: String
+    ): Movie
 }
